@@ -5,9 +5,9 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.binding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
-import kotlinx.datetime.LocalDate.Formats
 import kotlinx.datetime.UtcOffset
 import kotlinx.datetime.format
+import kotlinx.datetime.format.char
 import net.flipper.bridge.connection.feature.common.api.FDeviceFeature
 import net.flipper.bridge.connection.feature.common.api.FDeviceFeatureApi
 import net.flipper.bridge.connection.feature.common.api.FDeviceFeatureKey
@@ -47,7 +47,13 @@ class FTimeZoneFeatureApiImpl(
                 flow.map { event ->
                     TimezoneInfo(
                         name = event.name,
-                        offset = event.offset.format(UtcOffset.Formats.ISO),
+                        offset = event.offset.format(
+                            UtcOffset.Format {
+                                offsetHours()
+                                char(':')
+                                offsetMinutesOfHour()
+                            }
+                        ),
                         abbr = event.abbreviation
                     )
                 }
